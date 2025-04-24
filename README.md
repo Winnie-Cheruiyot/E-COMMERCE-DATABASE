@@ -4,7 +4,7 @@
 This project is a collaborative effort to design and implement a normalized e-commerce database system using MySQL and ERD tools.
 
 ## 🔧 ERD Diagram
-![ERD](./images/erd-diagram.png)
+![ERD](./images/ERD.png)
 
 > View the live ERD on [dbdiagram.io](https://dbdiagram.io)
 
