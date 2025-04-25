@@ -16,17 +16,18 @@ CREATE TABLE product (
   name VARCHAR(255),
   brand_id INT,
   category_id INT,
-  base_price DECIMAL(10,2),
+  base_price DECIMAL(10,2) NOT NULL CHECK (base_price > 0),
   description TEXT,
-  FOREIGN KEY (brand_id) REFERENCES brand(id),
-  FOREIGN KEY (category_id) REFERENCES product_category(id)
+  is_active BOOLEAN DEFAULT TRUE,
+  FOREIGN KEY (brand_id) REFERENCES brand(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES product_category(id) ON DELETE CASCADE
 );
 
 CREATE TABLE product_image (
   id INT AUTO_INCREMENT PRIMARY KEY,
   product_id INT,
   image_url VARCHAR(255),
-  FOREIGN KEY (product_id) REFERENCES product(id)
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
 
 CREATE TABLE color (
@@ -44,7 +45,7 @@ CREATE TABLE size_option (
   id INT AUTO_INCREMENT PRIMARY KEY,
   size VARCHAR(20),
   size_category_id INT,
-  FOREIGN KEY (size_category_id) REFERENCES size_category(id)
+  FOREIGN KEY (size_category_id) REFERENCES size_category(id) ON DELETE CASCADE
 );
 
 CREATE TABLE product_variation (
@@ -52,9 +53,9 @@ CREATE TABLE product_variation (
   product_id INT,
   color_id INT,
   size_id INT,
-  stock_quantity INT,
+  stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),
   sku VARCHAR(100),
-  FOREIGN KEY (product_id) REFERENCES product(id),
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
   FOREIGN KEY (color_id) REFERENCES color(id),
   FOREIGN KEY (size_id) REFERENCES size_option(id)
 );
@@ -62,8 +63,8 @@ CREATE TABLE product_variation (
 CREATE TABLE product_item (
   id INT AUTO_INCREMENT PRIMARY KEY,
   variation_id INT,
-  price DECIMAL(10,2),
-  FOREIGN KEY (variation_id) REFERENCES product_variation(id)
+  price DECIMAL(10,2) NOT NULL CHECK (price > 0),
+  FOREIGN KEY (variation_id) REFERENCES product_variation(id) ON DELETE CASCADE
 );
 
 CREATE TABLE attribute_category (
@@ -73,7 +74,7 @@ CREATE TABLE attribute_category (
 
 CREATE TABLE attribute_type (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) -- text, number, boolean
+  name VARCHAR(100) NOT NULL CHECK (name IN ('text', 'number', 'boolean'))-- text, number, boolean
 );
 
 CREATE TABLE product_attribute (
@@ -83,7 +84,7 @@ CREATE TABLE product_attribute (
   type_id INT,
   name VARCHAR(100),
   value VARCHAR(255),
-  FOREIGN KEY (product_id) REFERENCES product(id),
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
   FOREIGN KEY (category_id) REFERENCES attribute_category(id),
   FOREIGN KEY (type_id) REFERENCES attribute_type(id)
 );
